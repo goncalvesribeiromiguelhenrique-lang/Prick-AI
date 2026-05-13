@@ -164,10 +164,20 @@ body{
 <script>
 
 /* =========================
-   CONFIGURAÇÃO OPENAI
+   API KEY BASE64
 ========================= */
 
-const API_KEY = "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";
+/*
+CONVERTA SUA CHAVE:
+
+btoa("SUA_API_KEY")
+
+E COLE ABAIXO
+*/
+
+const API_KEY =
+atob("c2stb3ItdjEtZWY4NDVhNTAxNGY1NjIyMGI1MDFhZTAxNTQ1NmU3Y2M2MmUzYTFkOTc5ZTdjMzJhOTVhMjA2NDRlNTIzODkxZg==");
+
 
 /* =========================
    SISTEMA
@@ -177,9 +187,7 @@ let chats = [];
 
 let chatAtual = null;
 
-/* =========================
-   CARREGAR CHATS
-========================= */
+/* CARREGAR */
 
 let dadosSalvos =
 localStorage.getItem("chats");
@@ -192,9 +200,7 @@ if(dadosSalvos){
 
 }
 
-/* =========================
-   NOVO CHAT
-========================= */
+/* NOVO CHAT */
 
 document
 .getElementById("novoChat")
@@ -224,9 +230,7 @@ function criarNovoChat(){
 
 }
 
-/* =========================
-   SIDEBAR
-========================= */
+/* SIDEBAR */
 
 function atualizarSidebar(){
 
@@ -292,9 +296,7 @@ function atualizarSidebar(){
 
 }
 
-/* =========================
-   ABRIR CHAT
-========================= */
+/* ABRIR CHAT */
 
 function abrirChat(id){
 
@@ -305,9 +307,7 @@ function abrirChat(id){
 
 }
 
-/* =========================
-   RENDERIZAR
-========================= */
+/* RENDERIZAR */
 
 function renderizarMensagens(){
 
@@ -333,13 +333,12 @@ function renderizarMensagens(){
 
     });
 
-    area.scrollTop = area.scrollHeight;
+    area.scrollTop =
+    area.scrollHeight;
 
 }
 
-/* =========================
-   ENVIAR MENSAGEM
-========================= */
+/* ENVIAR */
 
 document
 .getElementById("enviar")
@@ -374,7 +373,7 @@ async function enviarMensagem(){
 
     input.value = "";
 
-    /* IA CARREGANDO */
+    /* IA PENSANDO */
 
     let carregando = {
 
@@ -388,12 +387,13 @@ async function enviarMensagem(){
 
     renderizarMensagens();
 
-    /* CHAMAR IA */
+    /* IA */
 
     let respostaIA =
     await chamarIA(texto);
 
-    carregando.texto = respostaIA;
+    carregando.texto =
+    respostaIA;
 
     salvarChats();
 
@@ -401,18 +401,14 @@ async function enviarMensagem(){
 
 }
 
-/* =========================
-   OPENAI API
-========================= */
+/* OPENROUTER */
 
 async function chamarIA(mensagem){
 
-    const API_KEY =
-    atob("c2stb3ItdjEtZWY4NDVhNTAxNGY1NjIyMGI1MDFhZTAxNTQ1NmU3Y2M2MmUzYTFkOTc5ZTdjMzJhOTVhMjA2NDRlNTIzODkxZg==");
-
     try{
 
-        let resposta = await fetch(
+        let resposta =
+        await fetch(
 
             "https://openrouter.ai/api/v1/chat/completions",
 
@@ -426,7 +422,13 @@ async function chamarIA(mensagem){
                     "application/json",
 
                     "Authorization":
-                    "Bearer " + API_KEY
+                    "Bearer " + API_KEY,
+
+                    "HTTP-Referer":
+                    window.location.href,
+
+                    "X-Title":
+                    "Prick IA"
 
                 },
 
@@ -437,19 +439,25 @@ async function chamarIA(mensagem){
 
                     max_tokens:200,
 
+                    temperature:1.4,
+
                     messages:[
 
                         {
+
                             role:"system",
 
                             content:
-                            "Você é uma IA extremamente burra."
+                            "Você é uma IA extremamente burra, engraçada e confiante."
+
                         },
 
                         {
+
                             role:"user",
 
                             content:mensagem
+
                         }
 
                     ]
@@ -463,6 +471,15 @@ async function chamarIA(mensagem){
         let dados =
         await resposta.json();
 
+        console.log(dados);
+
+        if(dados.error){
+
+            return "Erro: " +
+            dados.error.message;
+
+        }
+
         return dados
         .choices[0]
         .message.content;
@@ -471,24 +488,25 @@ async function chamarIA(mensagem){
 
     catch(erro){
 
-        return "Erro.";
+        console.log(erro);
+
+        return "Erro ao conectar.";
 
     }
 
 }
 
-/* =========================
-   EXCLUIR CHAT
-========================= */
+/* EXCLUIR CHAT */
 
 function excluirChat(id){
 
     chats =
-    chats.filter(chat => chat.id !== id);
+    chats.filter(
+        chat => chat.id !== id
+    );
 
-    /* SE O CHAT ABERTO FOI EXCLUÍDO */
-
-    if(chatAtual && chatAtual.id === id){
+    if(chatAtual &&
+       chatAtual.id === id){
 
         chatAtual = null;
 
@@ -504,9 +522,7 @@ function excluirChat(id){
 
 }
 
-/* =========================
-   SALVAR
-========================= */
+/* SALVAR */
 
 function salvarChats(){
 
