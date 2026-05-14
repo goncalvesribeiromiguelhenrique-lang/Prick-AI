@@ -163,21 +163,6 @@ body{
 
 <script>
 
-/* =========================
-   API KEY BASE64
-========================= */
-
-/*
-CONVERTA SUA CHAVE:
-
-btoa("SUA_API_KEY")
-
-E COLE ABAIXO
-*/
-
-const API_KEY =
-atob("c2stb3ItdjEtZWY4NDVhNTAxNGY1NjIyMGI1MDFhZTAxNTQ1NmU3Y2M2MmUzYTFkOTc5ZTdjMzJhOTVhMjA2NDRlNTIzODkxZg==");
-
 
 /* =========================
    SISTEMA
@@ -407,86 +392,21 @@ async function chamarIA(mensagem){
 
     try{
 
-        let resposta =
-        await fetch(
+        let resposta = await fetch("/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                mensagem: mensagem
+            })
+        });
 
-            "https://openrouter.ai/api/v1/chat/completions",
+        let dados = await resposta.json();
 
-            {
+        return dados.resposta;
 
-                method:"POST",
-
-                headers:{
-
-                    "Content-Type":
-                    "application/json",
-
-                    "Authorization":
-                    "Bearer " + API_KEY,
-
-                    "HTTP-Referer":
-                    window.location.href,
-
-                    "X-Title":
-                    "Prick IA"
-
-                },
-
-                body: JSON.stringify({
-
-                    model:
-                    "openai/gpt-4.1-mini",
-
-                    max_tokens:200,
-
-                    temperature:1.4,
-
-                    messages:[
-
-                        {
-
-                            role:"system",
-
-                            content:
-                            "Você é uma IA extremamente burra, engraçada e confiante."
-
-                        },
-
-                        {
-
-                            role:"user",
-
-                            content:mensagem
-
-                        }
-
-                    ]
-
-                })
-
-            }
-
-        );
-
-        let dados =
-        await resposta.json();
-
-        console.log(dados);
-
-        if(dados.error){
-
-            return "Erro: " +
-            dados.error.message;
-
-        }
-
-        return dados
-        .choices[0]
-        .message.content;
-
-    }
-
-    catch(erro){
+    } catch (erro) {
 
         console.log(erro);
 
